@@ -1,5 +1,3 @@
-
-cat > script.js << 'EOF'
 // Level 500, required build only
 // Shows listing home page, shows select dropdown, click-through to episodes,
 // back link, show search, episode search and selector
@@ -315,7 +313,6 @@ function formatEpisodeCode(episode) {
 }
 
 window.onload = setup;
-EOF
 
 
 
