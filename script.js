@@ -1,6 +1,8 @@
-// Level 500
-// Shows listing home page, click a show to see its episodes, back link returns to listing
-// Same fetch, cache, search, and selector logic as level 400, now with a shows view added
+
+cat > script.js << 'EOF'
+// Level 500, required build only
+// Shows listing home page, shows select dropdown, click-through to episodes,
+// back link, show search, episode search and selector
 
 const cache = {};
 let allShows = [];
@@ -73,6 +75,17 @@ function renderShowsView() {
   searchInput.addEventListener("input", handleShowSearch);
   showsView.appendChild(searchInput);
 
+  const showSelector = document.createElement("select");
+  showSelector.id = "show-selector";
+  showSelector.addEventListener("change", (event) => {
+    const showId = Number(event.target.value);
+    if (!showId) return;
+    const show = allShows.find((s) => s.id === showId);
+    if (show) loadEpisodesForShow(show);
+  });
+  showsView.appendChild(showSelector);
+  populateShowSelector(allShows);
+
   const count = document.createElement("p");
   count.id = "shows-count";
   showsView.appendChild(count);
@@ -84,13 +97,28 @@ function renderShowsView() {
   renderShowCards(allShows);
 }
 
+function populateShowSelector(shows) {
+  const selector = document.getElementById("show-selector");
+  if (!selector) return;
+  const alphabetical = shows
+    .slice()
+    .sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()));
+
+  selector.innerHTML = '<option value="">Jump to a show...</option>';
+  alphabetical.forEach((show) => {
+    const option = document.createElement("option");
+    option.value = show.id;
+    option.textContent = show.name;
+    selector.appendChild(option);
+  });
+}
+
 function handleShowSearch(event) {
   const term = event.target.value.trim().toLowerCase();
   const filtered = allShows.filter((show) => {
     const name = show.name.toLowerCase();
-    const genres = show.genres.join(" ").toLowerCase();
     const summary = (show.summary || "").toLowerCase();
-    return name.includes(term) || genres.includes(term) || summary.includes(term);
+    return name.includes(term) || summary.includes(term);
   });
   renderShowCards(term === "" ? allShows : filtered);
 }
@@ -287,3 +315,7 @@ function formatEpisodeCode(episode) {
 }
 
 window.onload = setup;
+EOF
+
+
+
