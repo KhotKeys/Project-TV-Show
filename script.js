@@ -115,8 +115,9 @@ function handleShowSearch(event) {
   const term = event.target.value.trim().toLowerCase();
   const filtered = allShows.filter((show) => {
     const name = show.name.toLowerCase();
+    const genres = show.genres.join(" ").toLowerCase();
     const summary = (show.summary || "").toLowerCase();
-    return name.includes(term) || summary.includes(term);
+    return name.includes(term) || genres.includes(term) || summary.includes(term);
   });
   renderShowCards(term === "" ? allShows : filtered);
 }
